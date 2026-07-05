@@ -54,8 +54,6 @@ bool testRAM()
 {
 	unsigned int *RAMAddress = game.RAM_START;
 	unsigned int save = *RAMAddress;
-//	Ensures this isn't a 256kB-RAM calc
-	if(gint[HWRAM] < 500000) return false;
 	*RAMAddress = 0xC0FFEE;
 	if(*RAMAddress == 0xC0FFEE)
 	{
@@ -175,7 +173,17 @@ int main(void)
 				.WORLDGEN_MULTIPLIER = 0.64
 			};
 			break;
-		
+
+		case HWCALC_FX9860G:
+			game = (struct GameCompatibilityPresets) {
+				.HWMODE = MODE_RAM,
+				.RAM_START = NULL,
+				.WORLD_WIDTH = 300,
+				.WORLD_HEIGHT = 100,
+				.WORLDGEN_MULTIPLIER = 0.30
+			};
+			break;
+
 		default:
 			incompatibleMenu(gint[HWCALC]);
 			return 0;
@@ -188,6 +196,13 @@ int main(void)
 		.tileData = game.RAM_START,
 		.error = -99,
 	};
+
+	// Allocate tile data from heap if no fixed RAM address (SH3)
+	if (game.RAM_START == NULL) {
+		save.tileData = malloc(save.tileDataSize);
+		allocCheck(save.tileData);
+		game.RAM_START = save.tileData;
+	}
 
 	if(!testRAM()) 
 	{
@@ -348,6 +363,8 @@ int main(void)
 //	Nothing is allocated if there are no NPCs
 	if(world.npcs != NULL) free(world.npcs);
 	if(world.markers != NULL) free(world.markers);
+	// Free heap-allocated tile data (SH3 only)
+	if (gint[HWCALC] == HWCALC_FX9860G) free(save.tileData);
 	if(save.error != -99) saveFailMenu();
 	
 	if(doSave)

@@ -1,0 +1,24 @@
+name: Build TERRARIO.g1a
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: manawyrm/fxsdk:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build fx-9860G (SH3)
+        run: fxsdk build-fx
+
+      - name: Upload TERRARIO.g1a
+        uses: actions/upload-artifact@v4
+        with:
+          name: TERRARIO-SH3
+          path: TERRARIO.g1a
