@@ -24,4 +24,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TERRARIO-SH3
-          path: TERRARIO.g1a
+          path: Terrario.g1a
