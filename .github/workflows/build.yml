@@ -13,13 +13,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build TERRARIO.g1a
+      - name: Debug env
+        run: |
+          export PATH="$PATH:/root/.local/bin"
+          echo "=== PATH ===" && echo $PATH
+          echo "=== sh-elf-gcc ===" && which sh-elf-gcc && sh-elf-gcc --version
+          echo "=== make ===" && make --version | head -1
+
+      - name: Build
         run: |
           export PATH="$PATH:/root/.local/bin"
           mkdir -p build-fx
-          make all-fx
+          make all-fx 2>&1
 
       - name: Upload TERRARIO.g1a
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: TERRARIO-SH3
