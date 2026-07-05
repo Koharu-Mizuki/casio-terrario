@@ -174,7 +174,6 @@ int main(void)
 			};
 			break;
 
-		case HWCALC_FX9860G:
 		case HWCALC_FX9860G_SH3:
 			game = (struct GameCompatibilityPresets) {
 				.HWMODE = MODE_RAM,
