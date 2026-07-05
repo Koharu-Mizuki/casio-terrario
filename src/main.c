@@ -175,6 +175,7 @@ int main(void)
 			break;
 
 		case HWCALC_FX9860G:
+		case HWCALC_FX9860G_SH3:
 			game = (struct GameCompatibilityPresets) {
 				.HWMODE = MODE_RAM,
 				.RAM_START = NULL,
@@ -185,8 +186,15 @@ int main(void)
 			break;
 
 		default:
-			incompatibleMenu(gint[HWCALC]);
-			return 0;
+			// Unknown model: use conservative heap-based settings
+			game = (struct GameCompatibilityPresets) {
+				.HWMODE = MODE_RAM,
+				.RAM_START = NULL,
+				.WORLD_WIDTH = 300,
+				.WORLD_HEIGHT = 100,
+				.WORLDGEN_MULTIPLIER = 0.30
+			};
+			break;
 	}
 
 	save = (struct SaveData){
@@ -363,8 +371,10 @@ int main(void)
 //	Nothing is allocated if there are no NPCs
 	if(world.npcs != NULL) free(world.npcs);
 	if(world.markers != NULL) free(world.markers);
-	// Free heap-allocated tile data (SH3 only)
-	if (gint[HWCALC] == HWCALC_FX9860G) free(save.tileData);
+	// Free heap-allocated tile data (not at fixed hardware addresses)
+	if (save.tileData != (void *)0x88040000 && save.tileData != (void *)0xFE200000) {
+		free(save.tileData);
+	}
 	if(save.error != -99) saveFailMenu();
 	
 	if(doSave)
