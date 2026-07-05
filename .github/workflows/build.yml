@@ -8,43 +8,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: manawyrm/fxsdk:latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install deps
+      - name: Build TERRARIO.g1a
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential git curl python3 \
-            libgmp-dev libmpfr-dev libmpc-dev libisl-dev flex bison texinfo \
-            libusb-1.0-0-dev libsdl2-dev cmake python3-pil
-
-      - name: Cache fxSDK toolchain
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.local
-          key: fxsdk-v1-${{ runner.os }}
-
-      - name: Install GiteaPC + toolchain
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          curl -sSL "https://gitea.planet-casio.com/Lephenixnoir/GiteaPC/raw/branch/master/install.sh" -o /tmp/giteapc.sh
-          echo "" | bash /tmp/giteapc.sh
-          source ~/.profile
-          cd ~/.local/share/giteapc/Lephenixnoir/GiteaPC
-          sed -i 's/^try:/# try:/; s/^    import requests/    pass/; s/^    _http_get = requests_get/    # force curl/; s/^except ImportError:/# except ImportError:/; s/^    pass/    # pass/' giteapc/gitea.py
-          python3 giteapc.py install -y \
-            Lephenixnoir/sh-elf-binutils \
-            Lephenixnoir/sh-elf-gcc \
-            Vhex-Kernel-Core/fxlibc \
-            Lephenixnoir/OpenLibm \
-            Lephenixnoir/gint \
-            Lephenixnoir/fxsdk
-
-      - name: Build
-        run: |
-          export PATH="$HOME/.local/bin:$PATH"
-          fxsdk build-fx
+          export PATH="$PATH:/root/.local/bin"
+          mkdir -p build-fx
+          make all-fx
 
       - name: Upload TERRARIO.g1a
         uses: actions/upload-artifact@v4
