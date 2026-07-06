@@ -19,6 +19,14 @@ jobs:
           mkdir -p build-fx
           make all-fx
 
+      - name: Show sizes
+        run: |
+          export PATH="$PATH:/root/.local/bin"
+          echo "=== ELF sections ==="
+          sh-elf-size build-fx/Terrario.elf
+          echo "=== g1a file ==="
+          ls -lh Terrario.g1a
+
       - name: Upload TERRARIO.g1a
         if: success()
         uses: actions/upload-artifact@v4
