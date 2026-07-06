@@ -157,7 +157,7 @@ int main(void)
 			game = (struct GameCompatibilityPresets) {
 				.HWMODE = MODE_RAM,
 				.RAM_START = (void *)0x88040000,
-				.WORLD_WIDTH = 2500,
+				.WORLD_WIDTH = 1500,
 				.WORLD_HEIGHT = 250,
 				.WORLDGEN_MULTIPLIER = 1.0
 			};
@@ -178,8 +178,8 @@ int main(void)
 			game = (struct GameCompatibilityPresets) {
 				.HWMODE = MODE_RAM,
 				.RAM_START = NULL,
-				.WORLD_WIDTH = 250,
-				.WORLD_HEIGHT = 80,
+				.WORLD_WIDTH = 150,
+				.WORLD_HEIGHT = 60,
 				.WORLDGEN_MULTIPLIER = 0.20
 			};
 			break;
@@ -189,8 +189,8 @@ int main(void)
 			game = (struct GameCompatibilityPresets) {
 				.HWMODE = MODE_RAM,
 				.RAM_START = NULL,
-				.WORLD_WIDTH = 250,
-				.WORLD_HEIGHT = 80,
+				.WORLD_WIDTH = 150,
+				.WORLD_HEIGHT = 60,
 				.WORLDGEN_MULTIPLIER = 0.20
 			};
 			break;
@@ -273,7 +273,7 @@ int main(void)
 		},
 
 		.chests = {
-			.chests = malloc((gint[HWCALC] == HWCALC_FX9860G_SH3 ? 15 : MAX_CHESTS) * sizeof(struct Chest)),
+			.chests = malloc((gint[HWCALC] == HWCALC_FX9860G_SH3 ? 10 : MAX_CHESTS) * sizeof(struct Chest)),
 			.addChest = &addChest,
 			.removeChest = &removeChest,
 			.findChest = &findChest
